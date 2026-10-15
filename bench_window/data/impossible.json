@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "title": "Constructed impossible operator collision",
+  "horizon": 300,
+  "resources": [
+    "Ari"
+  ],
+  "tasks": [
+    {
+      "id": "one",
+      "duration": 180,
+      "resources": [
+        "Ari"
+      ],
+      "fixed_start": 0
+    },
+    {
+      "id": "two",
+      "duration": 180,
+      "resources": [
+        "Ari"
+      ],
+      "release": 60,
+      "deadline": 300
+    }
+  ],
+  "links": []
+}

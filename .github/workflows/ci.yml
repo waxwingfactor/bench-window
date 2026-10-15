@@ -1,0 +1,54 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  tests:
+    name: Tests (${{ matrix.os }}, Python ${{ matrix.python }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.9', '3.14']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest discover -s tests -v
+      - run: python -m compileall -q bench_window
+  distribution:
+    name: Distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install build
+      - run: python -m build
+      - run: python scripts/check_distribution.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-distributions
+          path: dist/*
+          if-no-files-found: error
+  quality:
+    name: quality
+    needs: [tests, distribution]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every check
+        env:
+          TEST_RESULT: ${{ needs.tests.result }}
+          DIST_RESULT: ${{ needs.distribution.result }}
+        run: test "$TEST_RESULT" = success && test "$DIST_RESULT" = success
