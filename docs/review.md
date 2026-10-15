@@ -39,6 +39,16 @@ impossibility and unknown status. Additional CLI/contract tests cover installati
 examples, hostile output text, input rejection, stale plans and no-clobber writes.
 CI reports the final checked test count and environment matrix.
 
+The first hosted Python 3.14 run exposed a test assumption: its JSON parser
+accepted nesting that earlier versions rejected through recursion limits. The
+test was corrected to exercise the supported plan loader, which rejects that
+nested list structurally regardless of parser recursion behavior. Python 3.14
+remained in the required matrix.
+
+A packaging reviewer also required source-archive member checks and running the
+extracted bundled test suite, beyond merely installing a source distribution.
+Those checks were added to the required Distribution CI job.
+
 ## Rendered report inspection
 
 The lead inspected the actual generated HTML in the Codex browser at desktop

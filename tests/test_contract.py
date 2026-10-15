@@ -87,7 +87,7 @@ class StrictPlanContractTests(unittest.TestCase):
             with self.subTest(payload=payload[:30]):
                 self.path.write_bytes(payload)
                 with self.assertRaises(PlanError):
-                    read_json(self.path)
+                    load_plan(self.path)
 
     def test_utf8_bom_is_supported(self):
         self.path.write_bytes(b"\xef\xbb\xbf" + json.dumps(simple_plan()).encode("utf-8"))
