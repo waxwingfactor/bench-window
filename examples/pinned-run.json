@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "title": "Constructed remaining-run replan",
+  "horizon": 3600,
+  "resources": [
+    "Ari",
+    "Bea",
+    "centrifuge",
+    "reader"
+  ],
+  "tasks": [
+    {
+      "id": "a-load",
+      "label": "Load run A",
+      "duration": 120,
+      "resources": [
+        "Ari",
+        "centrifuge"
+      ],
+      "fixed_start": 0
+    },
+    {
+      "id": "a-spin",
+      "label": "Unattended equipment occupancy A",
+      "duration": 300,
+      "resources": [
+        "centrifuge"
+      ],
+      "fixed_start": 120
+    },
+    {
+      "id": "a-transfer",
+      "label": "Transfer A after hold",
+      "duration": 120,
+      "resources": [
+        "Ari"
+      ],
+      "fixed_start": 540
+    },
+    {
+      "id": "a-read",
+      "label": "Read A during fixed appointment",
+      "duration": 240,
+      "resources": [
+        "Ari",
+        "reader"
+      ],
+      "release": 1200,
+      "deadline": 1440
+    },
+    {
+      "id": "b-load",
+      "label": "Load a different run B",
+      "duration": 180,
+      "resources": [
+        "Bea",
+        "centrifuge"
+      ]
+    },
+    {
+      "id": "b-hold",
+      "label": "Unattended equipment occupancy B",
+      "duration": 240,
+      "resources": [
+        "centrifuge"
+      ]
+    },
+    {
+      "id": "b-transfer",
+      "label": "Transfer B",
+      "duration": 180,
+      "resources": [
+        "Bea"
+      ]
+    },
+    {
+      "id": "reader-booking",
+      "label": "External reader booking (fixed block)",
+      "duration": 300,
+      "resources": [
+        "reader"
+      ],
+      "fixed_start": 600
+    }
+  ],
+  "links": [
+    {
+      "before": "a-load",
+      "after": "a-spin",
+      "max_gap": 0
+    },
+    {
+      "before": "a-spin",
+      "after": "a-transfer",
+      "min_gap": 120,
+      "max_gap": 240
+    },
+    {
+      "before": "a-transfer",
+      "after": "a-read",
+      "min_gap": 60,
+      "max_gap": 600
+    },
+    {
+      "before": "b-load",
+      "after": "b-hold",
+      "max_gap": 0
+    },
+    {
+      "before": "b-hold",
+      "after": "b-transfer",
+      "min_gap": 60,
+      "max_gap": 120
+    }
+  ],
+  "not_before": 650
+}
